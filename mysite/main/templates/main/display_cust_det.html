@@ -1,0 +1,29 @@
+{%extends "main/base.html"%}
+{% block content %}
+<h1>
+   Customer name =  {{cust.name}}
+</h1>
+<h2>
+    Customer id = {{cust.id}}
+</h2>
+<h2>
+    Customer category =  {{cust.category}}
+</h2>
+<h2>
+    Customer address =  {{cust.address}}
+</h2>
+<h2>
+    Customer city =  {{cust.city}}
+</h2>
+<h2>
+    {%if cust.category == 'B'%}
+    customer discount = 0%
+    {% elif cust.category == 'S'%}
+    customer discount = 5%
+    {% elif cust.category == 'G'%}
+    customer discount = 10%
+    {%else%}
+    customer discount = 15%
+    {%endif%}
+</h2>
+{%endblock%}
