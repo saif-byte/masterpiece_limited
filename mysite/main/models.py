@@ -1,4 +1,5 @@
 from django.db import models
+from mysite import settings
 
 # Create your models here.
 class ToDoList(models.Model):
@@ -36,3 +37,33 @@ class Artist(models.Model):
     def __str__(self) -> str:
         return self.name
 
+class Owner(models.Model):
+    id = models.PositiveSmallIntegerField(primary_key=True , unique = True)
+    name = models.CharField(max_length=200)
+    address = models.CharField(max_length=200)
+    city = models.CharField(max_length=10)
+    
+    def __str__(self) -> str:
+        return self.name
+
+
+class Painting(models.Model):
+    id = models.PositiveSmallIntegerField(primary_key=True , unique = True)
+    title =  models.CharField(max_length=200)
+    theme = models.CharField(max_length=200)
+    rent = models.FloatField()
+    owner_id = models.ForeignKey(Owner , on_delete=models.CASCADE , null= False , blank = False)
+    artist_id = models.ForeignKey(Artist , on_delete=models.CASCADE , null=False ,blank = False)
+    mth_to_rtn = models.PositiveSmallIntegerField(default = 6) 
+    rtn_to_owner = models.BooleanField(default=False)
+    hired = models.BooleanField(default=False)
+    def __str__(self) -> str:
+        return self.title
+
+class HiredPainting(models.Model):
+    customer_id = models.ForeignKey(Customer , on_delete=models.CASCADE)
+    painting_id = models.ForeignKey(Painting , on_delete=models.CASCADE)
+    hired_date = models.DateField()
+    due_date = models.DateField()
+    returned = models.BooleanField(default=False)
+    appl_rent = models.FloatField()

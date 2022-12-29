@@ -1,0 +1,10 @@
+{%extends "main/base.html"%}
+
+{% block content %}
+<h1>Hire Painting</h1>
+<form method="POST" , action="hire-painting">
+    {%csrf_token%}
+    {{form.as_p}}
+    <button type="Submit">Hire</button>
+</form>
+{% endblock %}

@@ -1,0 +1,32 @@
+{%extends "main/base.html"%}
+
+{% block content %}
+
+<h1 style="text-align: center;" s>Customer Rental Report</h1>
+{%for c in cust %}
+<p style="font-size: 20;" >Customer ID : {{c.ID}}</p>
+<p style="text-align: right; font-size: 20;" >Customer Category: {{c.CATEGORY}}</p>
+<p style="font-size: 20;" >Customer Name : {{c.NAME}}</p>
+<p style="text-align: right; font-size: 20;" >Customer Discount: {{disc}}</p>
+<p style="font-size: 20;" >Customer Address : {{c.ADDRESS}}</p>
+{%endfor%}
+
+<table>
+    <tr>
+        <th>Painting ID</th>
+        <th>Painting Title</th>
+        <th>Painting Theme</th>
+        <th>Date of Hire</th>
+        <th>Date Due Back</th>
+        <th>Returned</th>
+      </tr>
+      {%for r in painting_info%}
+        <tr><td>{{r.ID}}</td>
+        <td>{{r.TITLE}}</td>
+        <td>{{r.THEME}}</td>
+        <td>{{r.HIRED_DATE}}</td>
+        <td>{{r.DUE_DATE}}</td>
+        <td>{{r.RETURNED}}</td>
+    </tr>
+    {%endfor%}
+{%endblock%}

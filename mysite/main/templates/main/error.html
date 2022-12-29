@@ -1,6 +1,13 @@
 {%extends "main/base.html"%}
 {%block content%}
-<h1 style="color: red;">
-    {{error}}</h1>
 
+{%if 'ARTIST_ID' in error %}    
+    <h1 style="color: red;">
+    Artist with ID does not exist. first create artist</h1>
+{%elif 'OWNER_ID' in error %}
+    <h1 style="color: red;">
+    owner with ID does not exist. first create owner</h1>
+{%endif%}
+
+<p>{{error}}</p>
 {%endblock%}

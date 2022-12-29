@@ -1,0 +1,21 @@
+{%extends "main/base.html"%}
+{% block content %}
+<h3>
+    The customer with ID {{cust_id}} has hired following paintings
+</h3>
+<table>
+    <tr>
+        <th>Painting ID</th>
+        <th>Applicable Rent</th>
+        <th>Returned</th>
+      </tr>
+      {%for r in hire%}
+      <tr><td>{{r.PAINTING_ID_ID}}</td>
+        <td>{{r.APPL_RENT}}</td>
+        <td>{{r.RETURNED}}</td>
+      
+  </tr>
+{%endfor%}
+
+</table>
+{%endblock%}

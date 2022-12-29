@@ -1,0 +1,32 @@
+{%extends "main/base.html"%}
+
+{% block content %}
+<h1>All paintings</h1>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Theme</th>
+        <th>Rent</th>
+        <th>Owner ID</th>
+        <th>Artist ID</th>
+        <th>Month to Return</th>
+        <th>Return to Onwer</th>
+        <th>Hired</th>
+      </tr>
+      {%for r in results%}
+        <tr><td>{{r.ID}}</td>
+        <td>{{r.TITLE}}</td>
+        <td>{{r.THEME}}</td>
+        <td>{{r.RENT}}</td>
+        <td>{{r.OWNER_ID_ID}}</td>
+        <td>{{r.ARTIST_ID_ID}}</td>
+        <td>{{r.MTH_TO_RTN}}</td>
+        <td>{{r.RTN_TO_OWNER}}</td>
+        <td>{{r.HIRED}}</td>
+    </tr>
+{%endfor%}
+
+</table>
+{% endblock %}

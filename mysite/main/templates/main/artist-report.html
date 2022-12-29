@@ -1,0 +1,33 @@
+{%extends "main/base.html"%}
+
+{% block content %}
+
+<h1 style="text-align: center;" s>Artist Report</h1>
+{%for a in artist %}
+<p style="font-size: 20;" >Artist ID : {{a.ID}}</p>
+<p style="text-align: center; font-size: 20;" >Year of Birth: {{a.YEAR_OF_BIRTH}}</p>
+<p style="font-size: 20;" >Artist Name : {{a.NAME}}</p>
+<p style="text-align: center; font-size: 20;" >Year of Death: {{a.YEAR_OF_DEATH}}</p>
+<p style="font-size: 20;" >Country of Birth : {{a.COUNTRY}}</p>
+
+{%endfor%}
+<table>
+    <tr>
+        <th>Painting ID</th>
+        <th>Painting Title</th>
+        <th>Painting Theme</th>
+        <th>Rental Price</th>
+        <th>Owner ID</th>
+        <th>Owner Name</th>
+      </tr>
+      {%for r in painting_info%}
+        <tr><td>{{r.PAINTING_ID}}</td>
+        <td>{{r.PAINTING_TITLE}}</td>
+        <td>{{r.PAINTING_THEME}}</td>
+        <td>{{r.PAINTING_RENT}}</td>
+        <td>{{r.OWNER_ID}}</td>
+        <td>{{r.OWNER_NAME}}</td>
+    </tr>
+    {%endfor%}
+
+{%endblock%}

@@ -236,3 +236,13 @@ COUNTRIES = (
     ('YE', 'YEMEN'),
     ('ZW', 'ZIMBABWE')
 )
+
+
+THEMES = [('Animal' , 'Animal') , 
+          ('Landscape', 'Landscape'),
+          ('Seascape','Seascape'),
+          ('Naval' , 'Naval'),
+          ('StillLife' ,'StillLife'),
+          ('Realism' ,'Realism'),
+          ('Expressionism' , 'Expressionism')
+    ]
