@@ -1,0 +1,25 @@
+{%extends "main/base.html"%}
+
+{% block content %}
+<h1>All Artists</h1>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Country</th>
+        <th>Year of Birth</th>
+        <th>Year of Death</th>
+      </tr>
+      {%for r in artists%}
+        <tr>
+        <td>{{r.ID}}</td>
+        <td>{{r.NAME}}</td>
+        <td>{{r.COUNTRY}}</td>
+        <td>{{r.YEAR_OF_BIRTH}}</td>
+        <td>{{r.YEAR_OF_DEATH}}</td>
+    </tr>
+{%endfor%}
+
+</table>
+{% endblock %}

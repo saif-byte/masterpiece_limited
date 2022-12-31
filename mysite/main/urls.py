@@ -21,6 +21,12 @@ urlpatterns = [
     path("customer-rental-report/<int:id>" , views.customer_rental_report , name="customer-rental-rpt"),
     path("gen-artist-rpt" , views.gen_artist_rpt , name="gen_artist_rpt"),
     path("artist-report/<int:id>" , views.artist_report , name="artist_report"),
+    path("gen-owner-rpt" , views.gen_owner_rpt , name="gen_owner_rpt"),
+    path("owner-report/<int:id>" , views.owner_report , name="owner_report"),
+    path("monthly-update" , views.monthly ,name="monthly" ),
+    path("customers" , views.customers ,name="customers" ),
+    path("artists" , views.artists ,name="artists" ),
+    path("owners" , views.owners ,name="owners" ),
     path("" , views.home , name = "home"),
 
 ]

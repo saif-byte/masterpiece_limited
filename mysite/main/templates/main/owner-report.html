@@ -1,0 +1,25 @@
+{%extends "main/base.html"%}
+
+{% block content %}
+
+<h1 style="text-align: center;" s>Owner Report</h1>
+{%for o in owner %}
+<p style="font-size: 20;" >Onwer ID : {{o.ID}}</p>
+<p style="font-size: 20;" >Owner Name: {{o.NAME}}</p>
+<p style= "font-size: 20;" >Owner Address: {{o.ADDRESS}}</p>
+{%endfor%}
+
+<table>
+    <tr>
+        <th>Painting ID</th>
+        <th>Painting Title</th>
+        <th>Return Date</th>
+      </tr>
+      {%for r in painting_info%}
+        <tr><td>{{r.PAINTING_ID}}</td>
+        <td>{{r.PAINTING_TITLE}}</td>
+        <td>{{r.PAINTING_RETURN_DATE}}</td>
+    </tr>
+    {%endfor%}
+
+{%endblock%}

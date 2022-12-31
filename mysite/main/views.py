@@ -4,7 +4,9 @@ from django.db import connection
 from django.http import HttpResponse,HttpResponseRedirect 
 from main.models import ToDoList, Item , Customer ,Artist, Owner,Painting ,HiredPainting
 from main.forms import createNewList , createNewCustomer ,createNewArtist,createNewOwner , createNewPainting,hirePainting,returnPainting,cust_rpt
-from main.db_utils import all_painting_view ,trigger_on_hiredpainting,make_is_hired_func,rtn_pnt,cal_rent,get_disc
+from main.db_utils import all_painting_view ,trigger_on_hiredpainting,make_is_hired_func,rtn_pnt,cal_rent,get_disc , get_date_sixmth,sub_rtn_date,rtndate_when_hired_trig,is_return_to_owner,monthly_update
+from dateutil.relativedelta import relativedelta
+import datetime
 # Create your views here.
 
 def dictfetchall(cursor): 
@@ -21,6 +23,12 @@ make_is_hired_func()
 rtn_pnt()
 cal_rent()
 get_disc()
+get_date_sixmth()
+sub_rtn_date()
+rtndate_when_hired_trig()
+is_return_to_owner()
+monthly_update()
+
 '''def index(response , id):
     ls = ToDoList.objects.get(id=id)
     return render(response , "main/list.html" ,{"ls":ls})
@@ -84,7 +92,7 @@ def create_artist(response):
             yod = art_form.cleaned_data["year_of_death"]
             answers = Artist.objects.filter(id=i)
             if not answers:
-                if yod!=None and yob>yod:
+                if str(yod)!='' and yob>yod:
                     error = "Year of Birth cannot be greater than Year of Death"
                     return render(response , "main/error.html" , {"error" : error} )
                 with connection.cursor() as cursor:
@@ -150,15 +158,21 @@ def create_painting(response):
             own_id= int(painting_form.cleaned_data["owner_id"])
             art_id= int(painting_form.cleaned_data["artist_id"])
             answers = Painting.objects.filter(id=i)
+            own_exist = Owner.objects.filter(id=own_id)
+            art_exist  = Artist.objects.filter(id=art_id)
             if not answers:
+                if not own_exist:
+                    error = "Owner does not exist, please create owner."
+                    return render(response , "main/error.html" , {"error" : error} )
+                elif not art_exist:
+                    error = "Artist does not exist, please create artist."
+                    return render(response , "main/error.html" , {"error" : error} )
                 with connection.cursor() as cursor:
-                    try:
                         r = cursor.execute(
-                            f'''INSERT INTO main_painting  
-                            VALUES ({i} ,'{ttl}' , '{thm}' , {rent} , {own_id} , {art_id} , 6 , 0 ,0);''')
+                            f'''INSERT INTO main_painting(id,title,theme,rent,owner_id_id,artist_id_id,mth_to_rtn,rtn_to_owner,hired) 
+                             VALUES ({i} ,'{ttl}' , '{thm}' , {rent} , {own_id} , {art_id} , 6 , 0, 0);''')
+                        cursor.callproc("sub_rtn_date" , [i])     
                         return HttpResponseRedirect("paintings/%s" %i)
-                    except IntegrityError as e:
-                        return render(response , "main/error.html" , {"error" : e} )
             else:
                 error = "Painting with ID already exists !"
                 return render(response , "main/error.html" , {"error" : error} )
@@ -194,9 +208,21 @@ def hire_painting(response):
             p_id = hire_form.cleaned_data["painting_id"]
             h_date = hire_form.cleaned_data["hire_date"]
             d_date = hire_form.cleaned_data["due_date"]
+            cust_exist = Customer.objects.filter(id = c_id)
+            paint_id = Painting.objects.filter(id = p_id)
+            if not cust_exist: 
+                error = "Customer do not exist"
+                return render(response , "main/error.html" , {"error" : error} )
+            if not paint_id: 
+                error = "Painting do not exist"
+                return render(response , "main/error.html" , {"error" : error} )
+            if h_date > d_date:
+                error = "Due date cannot be less than Hire date"
+                return render(response , "main/error.html" , {"error" : error} )
             with connection.cursor() as cursor:
                 is_hired = cursor.callfunc("is_hired" , int , [p_id])
-                if not is_hired:
+                is_return_to_owner = cursor.callfunc("is_return_to_owner" , int , [p_id])
+                if not is_hired and not is_return_to_owner:
                     try:
                         app_rent = cursor.callfunc('cal_rent' ,int , [c_id , p_id])
                         r = cursor.execute(
@@ -206,7 +232,7 @@ def hire_painting(response):
                     except IntegrityError as e:
                         return render(response , "main/error.html" , {"error" : e} )
                 else:
-                    error = "The painting is already hired"
+                    error = "The painting is already hired or the painting is returned to owner"
                     return render(response , "main/error.html" , {"error" : error} )
         else:
             return render(response , "main/hire-painting.html" , {"form" : hire_form})
@@ -296,3 +322,52 @@ def artist_report(response , id):
     else:
         error = "This Artist does not exist"
         return render(response , "main/error.html" , {"error" : error} )    
+
+def gen_owner_rpt(response):
+    if response.method == "POST":
+        rpt_form = cust_rpt(response.POST)
+        
+        if rpt_form.is_valid():
+            c_id = rpt_form.cleaned_data["id"]
+            return HttpResponseRedirect("owner-report/%s" %c_id)
+        else:
+            return render(response , "main/gen-owner-rpt.html" , {"form" : ret_form})
+    else:  
+        ret_form = cust_rpt()
+        return render(response , "main/gen-owner-rpt.html" , {"form" : ret_form})
+
+def owner_report(response , id):
+    if Owner.objects.filter(id = id):
+        cursor = connection.cursor()
+        cursor.execute(f'select * from main_owner where id = {id};')
+        owner = dictfetchall(cursor)
+        cursor.execute(f'select main_painting.ID as painting_id, main_painting.TITLE as painting_title , main_painting.RETURN_DATE as painting_return_date from  main_painting INNER JOIN main_owner ON  main_painting.owner_id_id = main_owner.id where main_owner.id = {id};')
+        painting_info = dictfetchall(cursor)
+        return render(response , "main/owner-report.html" , {"owner" : owner , "painting_info" : painting_info})
+    else:
+        error = "This Owner does not exist"
+        return render(response , "main/error.html" , {"error" : error} )    
+
+def monthly(response):
+    cursor = connection.cursor()
+    cursor.callproc('monthly_update')
+
+    return render(response , "main/monthly.html")    
+
+def customers(response):
+    cursor = connection.cursor()
+    cursor.execute('select * from main_customer;')
+    customers = dictfetchall(cursor)
+    return render(response , "main/customers.html" , {"customers":customers})    
+    
+def artists(response):
+    cursor = connection.cursor()
+    cursor.execute('select * from main_artist;')
+    artists = dictfetchall(cursor)
+    return render(response , "main/artists.html" , {"artists":artists})    
+
+def owners(response):
+    cursor = connection.cursor()
+    cursor.execute('select * from main_owner;')
+    owners = dictfetchall(cursor)
+    return render(response , "main/owners.html" , {"owners":owners})    

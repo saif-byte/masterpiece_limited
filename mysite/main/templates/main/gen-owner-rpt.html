@@ -1,0 +1,10 @@
+{%extends "main/base.html"%}
+
+{% block content %}
+<h1>Generate Owner Report</h1>
+<form method="POST" , action="gen-owner-rpt">
+    {%csrf_token%}
+    {{form.as_p}}
+    <button type="Submit">Generate Report</button>
+</form>
+{% endblock %}

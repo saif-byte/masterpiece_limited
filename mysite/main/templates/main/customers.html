@@ -1,0 +1,25 @@
+{%extends "main/base.html"%}
+
+{% block content %}
+<h1>All Customers</h1>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Address</th>
+        <th>City</th>
+        <th>Category</th>
+      </tr>
+      {%for r in customers%}
+        <tr>
+        <td>{{r.ID}}</td>
+        <td>{{r.NAME}}</td>
+        <td>{{r.ADDRESS}}</td>
+        <td>{{r.CITY}}</td>
+        <td>{{r.CATEGORY}}</td>
+    </tr>
+{%endfor%}
+
+</table>
+{% endblock %}

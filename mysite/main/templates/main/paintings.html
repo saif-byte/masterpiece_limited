@@ -14,6 +14,8 @@
         <th>Month to Return</th>
         <th>Return to Onwer</th>
         <th>Hired</th>
+        <th>Submit Date</th>
+        <th>Return Date</th>
       </tr>
       {%for r in results%}
         <tr><td>{{r.ID}}</td>
@@ -25,6 +27,8 @@
         <td>{{r.MTH_TO_RTN}}</td>
         <td>{{r.RTN_TO_OWNER}}</td>
         <td>{{r.HIRED}}</td>
+        <td>{{r.SUBMIT_DATE}}</td>
+        <td>{{r.RETURN_DATE}}</td>
     </tr>
 {%endfor%}
 

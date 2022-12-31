@@ -52,11 +52,13 @@ class Painting(models.Model):
     title =  models.CharField(max_length=200)
     theme = models.CharField(max_length=200)
     rent = models.FloatField()
-    owner_id = models.ForeignKey(Owner , on_delete=models.CASCADE , null= False , blank = False)
-    artist_id = models.ForeignKey(Artist , on_delete=models.CASCADE , null=False ,blank = False)
+    owner_id = models.ForeignKey(Owner , on_delete=models.CASCADE )
+    artist_id = models.ForeignKey(Artist , on_delete=models.CASCADE )
     mth_to_rtn = models.PositiveSmallIntegerField(default = 6) 
     rtn_to_owner = models.BooleanField(default=False)
     hired = models.BooleanField(default=False)
+    submit_date = models.DateField(null=True)
+    return_date = models.DateField(null=True)
     def __str__(self) -> str:
         return self.title
 
