@@ -1,26 +1,9 @@
 from django.db import connection
+#all procedures, functions and triggers are here
 
-def hired_trigger():
-    cursor = connection.cursor()
+#trigger to change hired value to 1 whenever painting is hired
 
-    sql = '''
-    create or replace TRIGGER hired_trigger AFTER INSERT ON main_hiredpainting
-    FOR EACH ROW    
-BEGIN
-   -- update the painting table   
-   UPDATE main_painting 
-   SET mth_to_rtn = 6 
-   WHERE id  = :NEW.painting_id_id;
-
-   UPDATE main_painting 
-   SET hired = 1 
-   WHERE id  = :NEW.painting_id_id;
-
-END;
-
-
-    '''
-
+#view to view all paintings
 def all_painting_view():
     cursor = connection.cursor()
 
@@ -28,7 +11,7 @@ def all_painting_view():
 
     
 
-
+#trigger to change hired value to 1 whenever painting is hired
 def trigger_on_hiredpainting():
     cursor = connection.cursor()
     
@@ -47,7 +30,7 @@ BEGIN
 END;
 ''')    
 
-
+#function to find whether a painitng is hired or not.
 def make_is_hired_func():
     cursor = connection.cursor()
 
@@ -64,6 +47,7 @@ def make_is_hired_func():
     END;
 ''')
 
+#procedure to return painting back to company.
 def rtn_pnt():
     cursor = connection.cursor()
 
@@ -78,6 +62,7 @@ def rtn_pnt():
 
     ''')
 
+#function to calculate applicable rent after discount.
 def cal_rent():
     cursor = connection.cursor()
 
@@ -104,7 +89,7 @@ RETURN calrent;
     
     ''')
 
-
+#trigger to set hired back to 0 after the painting is returned to company.
 def after_rtn_trigger():
     cursor = connection.cursor()
 
@@ -121,6 +106,7 @@ BEGIN
 END;
     ''')
 
+#function to calculate discount on each category.
 def get_disc():
   cursor = connection.cursor()
   cursor.execute('''
@@ -141,6 +127,7 @@ RETURN disc;
     END;
   ''')
 
+#function to get date after six month of submitting.
 def get_date_sixmth():
   cursor = connection.cursor()
 
@@ -156,6 +143,7 @@ RETURN r_date;
     END;
   ''')
 
+#procedure to set submit date and returned date when a painting is submitted.
 def sub_rtn_date():
   cursor = connection.cursor()
 
@@ -174,6 +162,7 @@ CREATE OR REPLACE PROCEDURE sub_rtn_date( pid IN main_painting.id%type  )
 
   ''')
 
+#trigger to update return date to owner when a painting is hired.
 def rtndate_when_hired_trig():
   cursor = connection.cursor()
   cursor.execute('''
@@ -186,6 +175,7 @@ BEGIN
 END;
   ''')
 
+#function to check whether painting is returned to owner or not.
 def is_return_to_owner():
   cursor = connection.cursor()
   cursor.execute('''
@@ -202,6 +192,7 @@ def is_return_to_owner():
     END;
   ''')
 
+#procedure to do monthly update if some painting is not hired for 6 months then give back to owner. 
 def monthly_update():
   cursor = connection.cursor()
   cursor.execute('''
